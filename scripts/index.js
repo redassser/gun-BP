@@ -42,10 +42,10 @@ function fire(e, opts) {
     if (wet&&wet.block.typeId === "minecraft:water"){
         let wetBlock = wet.block.location;
         let block = blk.block.location;
-        let deltay = playerhead.y-(wetBlock.y + 1);
+        let deltay = playerhead.y-(wetBlock.y + 0.6);
         let deltax = (playerview.x/playerview.y)*deltay;
         let deltaz = (playerview.z/playerview.y)*deltay;
-        let wetLoc = { x: playerhead.x-deltax, y: wetBlock.y + 1, z: playerhead.z-deltaz };
+        let wetLoc = { x: playerhead.x-deltax, y: wetBlock.y + 0.6, z: playerhead.z-deltaz };
         const vars = new MolangVariableMap();
         vars.setVector3("variable.direction", {x: 0, y: 1, z: 0});
         e.source.dimension.spawnParticle("rr:ripple", wetLoc, vars);
