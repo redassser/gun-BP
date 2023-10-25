@@ -35,10 +35,21 @@ function trigger(e) {
 function fire(e, opts) {
     //Calculate Hits
     const playerhead = e.source.getHeadLocation(), playerview = e.source.getViewDirection();
-    playerhead.y += 0.1;
+    playerhead.y += 0.1; 
     const blk = e.source.dimension.getBlockFromRay(playerhead, playerview, { maxDistance: opts.maxDistance });
+    const wet = e.source.dimension.getBlockFromRay(playerhead, playerview, { maxDistance: opts.maxDistance, includeLiquidBlocks: true });
     const ent = e.source.dimension.getEntitiesFromRay(playerhead, playerview, { maxDistance: opts.maxDistance })[1];
-
+    if (wet&&wet.block.typeId === "minecraft:water"){
+        let wetBlock = wet.block.location;
+        let block = blk.block.location;
+        let deltay = playerhead.y-(wetBlock.y + 1);
+        let deltax = (playerview.x/playerview.y)*deltay;
+        let deltaz = (playerview.z/playerview.y)*deltay;
+        let wetLoc = { x: playerhead.x-deltax, y: wetBlock.y + 1, z: playerhead.z-deltaz };
+        const vars = new MolangVariableMap();
+        vars.setVector3("variable.direction", {x: 0, y: 1, z: 0});
+        e.source.dimension.spawnParticle("rr:ripple", wetLoc, vars);
+    }
     if (!blk && !ent) return; // Miss
     else if (ent && (!blk || !blk.distance || ent.distance <= blk.distance) && !ent.entity.hasComponent("minecraft:item")) {
         ent.entity.applyDamage(opts.damage, { cause: "entityAttack", damagingEntity: e.source });
