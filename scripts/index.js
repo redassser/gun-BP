@@ -21,6 +21,9 @@ const statLib = {
 world.afterEvents.itemUse.subscribe((e) => {
     trigger(e);
 })
+world.afterEvents.playerInteractWithEntity.subscribe((e) => {
+    trigger({source:e.player,itemStack:e.itemStack})
+})
 function trigger(e) {
     if (!e.itemStack || !e.itemStack.hasTag("rr:gun")) return;
     const ammo = e.itemStack.getComponent("minecraft:durability");
@@ -45,6 +48,7 @@ function fire(e, opts) {
         //player.dimension.spawnParticle("rr:blood", ent.entity.getHeadLocation());
     } else if (blk && (!ent || ent.distance > blk.distance)) {
         let newLoc = blk.block.location;
+        if (!blk.block.dimension.getBlock(newLoc)) return;
         let face = { x: 0, y: 0, z: 0 };
         let dir;
         newLoc.x += blk.faceLocation.x; newLoc.y += blk.faceLocation.y; newLoc.z += blk.faceLocation.z;
@@ -54,8 +58,8 @@ function fire(e, opts) {
             case "West": face.x = -1; dir = "x"; break;
             case "Up": face.y = 1; dir = "y"; break;
             case "Down": face.y = -1; dir = "y"; break;
-            case "South": face.z = 1; dir = "z"; break;
-            case "North": face.z = -1; dir = "z"; break;
+            case "South": face.z = 1; dir = "x"; break;
+            case "North": face.z = -1; dir = "x"; break;
         }
         vars.setVector3("variable.direction", face);
         vars.setFloat("variable.intensity", opts.intensity)
