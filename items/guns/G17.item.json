@@ -22,15 +22,6 @@
             "minecraft:interact_button": "Shoot / Reload",
             "minecraft:hand_equipped": true,
             "minecraft:max_stack_size": 1
-        },
-        "events": {
-            "rr:takedamage": {
-                "damage": {
-                    "type": "durability",
-                    "target": "self",
-                    "amount": 1
-                }
-            }
         }
     }
 }

@@ -62,8 +62,10 @@ function fire(e, opts) {
             case "North": face.z = -1; dir = "x"; break;
         }
         vars.setVector3("variable.direction", face);
-        vars.setFloat("variable.intensity", opts.intensity)
+        vars.setFloat("variable.intensity", opts.intensity);
+        vars.setVector3("variable.playerlook", playerview);
 
+        e.source.dimension.spawnParticle("rr:bullet", playerhead, vars);
         e.source.dimension.spawnParticle("rr:bulletexp", newLoc, vars);
         e.source.dimension.spawnParticle("rr:bullethole"+dir, newLoc, vars);
         e.source.dimension.spawnParticle("rr:bulletspray", newLoc, vars);
