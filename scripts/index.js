@@ -7,18 +7,12 @@ const statLib = {
         maxDistance: 90, //blocks
         damage: 8, //half hearts
         intensity: 2
-    },
-    "rr:m4a1": {
-        semi: false,
-        magSize: 30,
-        maxDistance: 300, //blocks
-        damage: 6, //half hearts
-        intensity: 4
     }
 }
 
 //world.afterEvents.itemStartUse()
-world.afterEvents.itemUse.subscribe((e) => {
+world.afterEvents.itemUse.subscribe((item, e) => {
+    e.source.sendMessage(item.typeId);
     trigger(e);
 })
 world.afterEvents.playerInteractWithEntity.subscribe((e) => {
