@@ -42,17 +42,19 @@ function fire(e, opts) {
     const blk = e.source.dimension.getBlockFromRay(playerhead, playerview, { maxDistance: opts.maxDistance });
     const wet = e.source.dimension.getBlockFromRay(playerhead, playerview, { maxDistance: opts.maxDistance, includeLiquidBlocks: true });
     const ent = e.source.dimension.getEntitiesFromRay(playerhead, playerview, { maxDistance: opts.maxDistance })[1];
-    if (wet&&wet.block.typeId === "minecraft:water"){
+    var inWater = false;
+    if (wet && wet.block.typeId === "minecraft:water") {
         let wetBlock = wet.block.location;
         let block = blk.block.location;
-        let deltay = playerhead.y-(wetBlock.y + 0.6);
-        let deltax = (playerview.x/playerview.y)*deltay;
-        let deltaz = (playerview.z/playerview.y)*deltay;
-        let wetLoc = { x: playerhead.x-deltax, y: wetBlock.y + 0.6, z: playerhead.z-deltaz };
+        let deltay = playerhead.y - (wetBlock.y + 0.6);
+        let deltax = (playerview.x / playerview.y) * deltay;
+        let deltaz = (playerview.z / playerview.y) * deltay;
+        let wetLoc = { x: playerhead.x - deltax, y: wetBlock.y + 0.6, z: playerhead.z - deltaz };
         const vars = new MolangVariableMap();
-        vars.setVector3("variable.direction", {x: 0, y: 1, z: 0});
+        vars.setVector3("variable.direction", { x: 0, y: 1, z: 0 });
         e.source.dimension.spawnParticle("rr:ripple", wetLoc, vars);
-    }
+        inWater = true;
+    } else inWater = false;
     if (!blk && !ent) return; // Miss
     else if (ent && (!blk || !blk.distance || ent.distance <= blk.distance) && !ent.entity.hasComponent("minecraft:item")) {
         ent.entity.applyDamage(opts.damage, { cause: "entityAttack", damagingEntity: e.source });
@@ -76,10 +78,12 @@ function fire(e, opts) {
         vars.setFloat("variable.intensity", opts.intensity);
         vars.setVector3("variable.playerlook", playerview);
 
+        if (!inWater) {
+            e.source.dimension.spawnParticle("rr:bulletexp", newLoc, vars);
+            e.source.dimension.spawnParticle("rr:bullethole"+dir, newLoc, vars);
+            e.source.dimension.spawnParticle("rr:bulletspray", newLoc, vars);
+        }
         e.source.dimension.spawnParticle("rr:bullet", playerhead, vars);
-        e.source.dimension.spawnParticle("rr:bulletexp", newLoc, vars);
-        e.source.dimension.spawnParticle("rr:bullethole"+dir, newLoc, vars);
-        e.source.dimension.spawnParticle("rr:bulletspray", newLoc, vars);
     }
 }
 function misfire(e) {
